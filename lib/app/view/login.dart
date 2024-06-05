@@ -7,15 +7,17 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: const Text('Iniciar sesión'),
-      ),
+      ),*/
+      backgroundColor: const Color(0xffffffff),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0,vertical: 40.0),
         child: Column(
           children: [
-            const Text('Bienvendio',
+            Image.asset('assets/empresa.png',height: 268),
+            const Text('Iniciar Sesión',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24.0
@@ -41,12 +43,12 @@ class LoginView extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Prueba',)),
+                  MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Categoria',)),
                 );
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(56),
-                backgroundColor: Theme.of(context).colorScheme.primary,
+                backgroundColor: Theme.of(context).colorScheme.onPrimaryFixed,
                 foregroundColor: const Color(0xffffffff)
               ),
               child: const Text('Iniciar sesión',style : TextStyle(

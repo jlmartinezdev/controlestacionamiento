@@ -8,18 +8,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    const primary = Color(0xff6FB9FF);
+    const primary = Color(0xff008800);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
 
-        colorScheme: ColorScheme.fromSeed(seedColor: primary),
+        colorScheme: ColorScheme.fromSeed(seedColor: primary).copyWith(
+          surface: const Color(0xffffffff)
+        ),
         textTheme: Theme.of(context).textTheme.apply(
           fontFamily: 'Inter',
           displayColor: const Color(0xff000000)
         ),
 
-       // useMaterial3: true,
+       useMaterial3: true,
       ),
       home: const LoginView(),
     );
