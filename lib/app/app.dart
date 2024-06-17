@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     const primary = Color(0xff008800);
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Control Estacionamiento',
       theme: ThemeData(
 
         colorScheme: ColorScheme.fromSeed(seedColor: primary).copyWith(
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
 
        useMaterial3: true,
       ),
-      home: const LoginView(),
+      home: const LoginView(title: 'Login'),
     );
   }
 }
