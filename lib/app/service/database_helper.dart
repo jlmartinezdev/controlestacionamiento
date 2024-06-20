@@ -20,7 +20,7 @@ class DatabaseHelper {
 
   // Set the version. This executes the onCreate function and provides a
   // path to perform database upgrades and downgrades.
-  static const int versionNumber = 1;
+  static const int versionNumber = 2;
 
   // Table name
   static const String tableNotes = 'Notes';
@@ -60,7 +60,7 @@ class DatabaseHelper {
   // Run the CREATE TABLE statement on the database.
   _onCreate(Database db, int intVersion) async {
     await db.execute(
-      'CREATE TABLE user(id_usuario INTEGER PRIMARY KEY, name TEXT, dni TEXT, password TEXT, email TEXT)',
+      'CREATE TABLE user(id_usuario INTEGER PRIMARY KEY, name TEXT, dni TEXT, password TEXT, email TEXT, rol INTEGER)',
     );
     db.execute('CREATE TABLE categoria( id INTEGER PRIMARY KEY, name TEXT, precio REAL)');
     db.execute('CREATE TABLE entrada(id INTEGER PRIMARY KEY, fechahora TEXT, id_usuario INTEGER, monto REAL)');
@@ -76,8 +76,9 @@ class DatabaseHelper {
     final result = await db.query('user', orderBy: '$colId ASC');
 
     // Convert the List<Map<String, dynamic> into a List<Note>.
-    return result.map((json) => User.fromJson(json)).toList();
+    return result.map((json) => User.map(json)).toList();
   }
+
   Future<List<User>> users() async {
 
     final db = await database;
@@ -90,11 +91,25 @@ class DatabaseHelper {
       'name': name as String,
       'dni': dni as String,
       'password': password as String,
-      'email': email as String
+      'email': email as String,
+      'rol': rol as int
       } in userMaps)
-        User(id_usuario: id_usuario, name: name, dni: dni, password: password, email: email),
+        User(id_usuario: id_usuario, name: name, dni: dni, password: password, email: email, rol: rol),
     ];
 
+
+  }
+  Future<User> checkUser(String email, String password) async{
+    var dbClient = await database;
+    final maps = await dbClient.query("user",where:'"email" = ? and "password"=?',whereArgs: [email, password]);
+
+    if (maps.isNotEmpty) {
+     // print(maps.first);
+      return User.map(maps.first);
+     // return User.fromJson(maps.first);
+    } else {
+      return Future<User>.error("Correo/Contraseña incorrecta...");
+    }
 
   }
   // Serach note by Id
@@ -107,7 +122,7 @@ class DatabaseHelper {
     );
 
     if (maps.isNotEmpty) {
-      return User.fromJson(maps.first);
+      return User.map(maps.first);
     } else {
       throw Exception('ID $id not found');
     }

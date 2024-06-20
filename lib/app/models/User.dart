@@ -4,13 +4,15 @@ class User{
    String? dni;
    String? password;
    String? email;
+   int? rol;
 
   User({
     required this.id_usuario,
     required this.name,
     required this.dni,
     required this.password,
-    required this.email
+    required this.email,
+    this.rol
   });
   Map<String, Object?> toMap(){
     return {
@@ -18,18 +20,19 @@ class User{
       'name': name,
       'dni': dni,
       'password': password,
-      'email': email
+      'email': email,
+      'rol': rol
     };
   }
-  // Convert a Note into a Map. The keys must correspond to the names of the
-  // columns in the database.
-  User.fromJson(Map<String, dynamic> map) {
-    id_usuario: map['id_usuario'];
-    name: map['name'];
-    dni: map['dni'];
-    password: map['password'];
-    email: map['email'];
-  }
+   User.map(dynamic obj) {
+     id_usuario = obj['id_usuario'];
+     name = obj['name'];
+     dni  = obj['dni'];
+     password = obj['password'];
+     email = obj['email'];
+     rol = obj['rol'];
+   }
+
 
 // Method to convert a 'NoteModel' to a map
   Map<String, dynamic> toJson() {
@@ -38,12 +41,13 @@ class User{
       'name': name,
       'dni': dni,
       'password': password,
-      'email': email
+      'email': email,
+      'rol': rol
     };
   }
 
   @override
   String toString() {
-    return 'User{id_usuario: $id_usuario, name: $name, dni: $dni, password: $password, email: $email}';
+    return 'User{id_usuario: $id_usuario, name: $name, dni: $dni, password: $password, email: $email, rol: $rol}';
   }
 }
