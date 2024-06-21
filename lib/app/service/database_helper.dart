@@ -1,11 +1,8 @@
 // Import the plugins Path provider and SQLite.
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+
+import 'package:control_estacionamiento/app/models/Categoria.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'dart:io' as io;
-
-// Import UserModel
 import '/app/models/User.dart';
 
 class DatabaseHelper {
@@ -23,7 +20,7 @@ class DatabaseHelper {
   static const int versionNumber = 2;
 
   // Table name
-  static const String tableNotes = 'Notes';
+  static const String tableNotes = 'User';
 
   // Table (Users) Columns
   static const String colId = 'id_usuario';
@@ -46,12 +43,12 @@ class DatabaseHelper {
 
   _initDatabase() async {
     //io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    // Change the default factory. On iOS/Android, if not using `sqlite_flutter_lib` you can forget
+    // this step, it will use the sqlite version available on the system.
 
-    // Set the path to the database. Note: Using the `join` function from the
-    // `path` package is best practice to ensure the path is correctly
-    // constructed for each platform.
+
     String path = join(await getDatabasesPath(), databaseName);
-    // When the database is first created, create a table to store Notes.
+
     var db =
     await openDatabase(path, version: versionNumber, onCreate: _onCreate);
     return db;
@@ -62,29 +59,21 @@ class DatabaseHelper {
     await db.execute(
       'CREATE TABLE user(id_usuario INTEGER PRIMARY KEY, name TEXT, dni TEXT, password TEXT, email TEXT, rol INTEGER)',
     );
-    db.execute('CREATE TABLE categoria( id INTEGER PRIMARY KEY, name TEXT, precio REAL)');
-    db.execute('CREATE TABLE entrada(id INTEGER PRIMARY KEY, fechahora TEXT, id_usuario INTEGER, monto REAL)');
+    await db.execute('CREATE TABLE categoria( id INTEGER PRIMARY KEY, name TEXT, precio REAL)');
+    await db.execute('CREATE TABLE entrada(id INTEGER PRIMARY KEY, fechahora TEXT, id_usuario INTEGER, monto REAL)');
 
 
   }
-  // A method that retrieves all the notes from the Notes table.
+
   Future<List<User>> getAllUsers() async {
-    // Get a reference to the database.
     final db = await database;
-
-    // Query the table for all The Notes. {SELECT * FROM Notes ORDER BY Id ASC}
     final result = await db.query('user', orderBy: '$colId ASC');
-
-    // Convert the List<Map<String, dynamic> into a List<Note>.
     return result.map((json) => User.map(json)).toList();
   }
 
   Future<List<User>> users() async {
-
     final db = await database;
-
     final List<Map<String, Object?>> userMaps = await db.query('user');
-
     return [
       for (final {
       'id_usuario': id_usuario as int,
@@ -96,9 +85,22 @@ class DatabaseHelper {
       } in userMaps)
         User(id_usuario: id_usuario, name: name, dni: dni, password: password, email: email, rol: rol),
     ];
-
-
   }
+
+  Future<List<Categoria>> getAllCategorias() async {
+    final db = await database;
+    final List<Map<String, Object?>>  maps = await db.query('categoria');
+    print(maps);
+    return [
+      for (final {
+      'id': id as int,
+      'name': name as String,
+      'precio': precio as double
+      } in maps)
+        Categoria(id: id, name: name, precio: precio),
+    ];
+  }
+
   Future<User> checkUser(String email, String password) async{
     var dbClient = await database;
     final maps = await dbClient.query("user",where:'"email" = ? and "password"=?',whereArgs: [email, password]);
@@ -113,7 +115,7 @@ class DatabaseHelper {
 
   }
   // Serach note by Id
-  Future<User> read(int id) async {
+  Future<User> getUserById(int id) async {
     final db = await database;
     final maps = await db.query(
       'user',
@@ -130,24 +132,33 @@ class DatabaseHelper {
 
   Future<void> insertUser(User user) async {
     // Get a reference to the database.
+
     final db = await database;
-    await db.insert(
-      'user',
-      user.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    try{
+      await db.insert(
+        'user',
+        user.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }catch(ex){
+      print(ex);
+    }
+
   }
   // Define a function that inserts notes into the database
   Future<void> insertMetodo2(User note) async {
-    // Get a reference to the database.
     final db = await database;
-
-    // Insert the Note into the correct table. You might also specify the
-    // `conflictAlgorithm` to use in case the same Note is inserted twice.
-    //
-    // In this case, replace any previous data.
     await db.insert('user', note.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+  Future<void> insertCategoria(Categoria cat) async {
+    final db = await database;
+    try {
+      await db.insert('categoria', cat.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    }catch(error){
+      print(error);
+    }
   }
 
 
@@ -162,6 +173,17 @@ class DatabaseHelper {
     );
   }
 
+  Future<void> updateCategoria(Categoria cat) async {
+
+    final db = await database;
+    await db.update(
+      'user',
+      cat.toMap(),
+      where: 'id = ?',
+      whereArgs: [cat.id],
+    );
+  }
+
   // Define a function to delete a note
   Future<void> deleteUser(int id) async {
     final db = await database;
@@ -171,8 +193,23 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
+  Future<void> deleteCategoria(int id) async {
+    final db = await database;
+    await db.delete(
+      'categoria',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+  Future<void> deleteAllCategoria() async {
+    final db = await database;
+    await db.delete(
+      'categoria'
+    );
+  }
 
-  Future close() async {
+
+ Future close() async {
     final db = await database;
     db.close();
   }

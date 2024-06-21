@@ -1,5 +1,6 @@
 import 'package:control_estacionamiento/app/view/home_page.dart';
 import 'package:control_estacionamiento/app/view/login.dart';
+import 'package:control_estacionamiento/app/view/usuario.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -23,6 +24,10 @@ class MyApp extends StatelessWidget {
 
        useMaterial3: true,
       ),
+      routes: {
+        '/pagina1': (context) => const UserPage(title: "Usuario"),
+        '/pagina2': (context) => const MyHomePage(title: "Home"),
+      },
       home: const LoginView(title: 'Login'),
     );
   }

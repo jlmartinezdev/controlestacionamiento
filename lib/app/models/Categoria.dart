@@ -18,6 +18,14 @@ class Categoria {
       'precio': precio,
     };
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'precio': precio,
+    };
+  }
+
 
   // Implement toString to make it easier to see information about
   // each dog when using the print statement.

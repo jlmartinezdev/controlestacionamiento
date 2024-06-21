@@ -55,12 +55,14 @@ class _LoginState extends State<LoginView> implements LoginPageContract {
 
   @override
   void initState() {
+    //appDatabase.deleteAllCategoria();
     /*var model = User(
         id_usuario: 1,
         name: 'Admin',
         dni: '35',
         password: '12345',
-        email: 'admin@admin'
+        email: 'admin@admin',
+        rol: 1
     );
       appDatabase.deleteUser(4);
       appDatabase.deleteUser(5);
@@ -89,7 +91,7 @@ class _LoginState extends State<LoginView> implements LoginPageContract {
   @override
   dispose() {
     // Close the database when no longer needed
-    appDatabase.close();
+    //appDatabase.close();
     super.dispose();
   }
 
