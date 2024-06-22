@@ -1,7 +1,7 @@
 class Categoria {
-  final int id;
-  final String name;
-  final double precio;
+  int? id;
+  String? name;
+  double? precio;
 
   Categoria({
     required this.id,
@@ -17,6 +17,11 @@ class Categoria {
       'name': name,
       'precio': precio,
     };
+  }
+  Categoria.map(dynamic obj) {
+    id = obj['id'];
+    name = obj['name'];
+    precio  = obj['precio'];
   }
   Map<String, dynamic> toJson() {
     return {

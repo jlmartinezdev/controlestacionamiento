@@ -21,7 +21,9 @@ class _MyHomePageState extends State<MyHomePage> {
   //late Categoria categoria;
 
   void navegarAPagina(BuildContext context, String ruta) {
-    Navigator.pushNamed(context, ruta);
+    Navigator.pushNamed(context, ruta).then((_)=>{
+      getAllCategoria()
+    });
   }
 
   void getAllCategoria(){
@@ -76,16 +78,33 @@ class _MyHomePageState extends State<MyHomePage> {
                 setState(() {
                   _selectedValue = value;
                 });
-                navegarAPagina(context, '/pagina1');
+                if(_selectedValue== '1'){
+                  navegarAPagina(context, '/pagina1');
+                }
+                if(_selectedValue== '2'){
+                  navegarAPagina(context, '/categoria');
+                }
+
               },
               itemBuilder: (BuildContext context) => [
                 const PopupMenuItem(
+
                   value: '1',
-                  child: Text('Usuario'),
+                  child:Row(
+                    children: [
+                      Icon(Icons.person, color: Colors.black,),
+                      Text('Usuario'),
+                    ],
+                  ),
                 ),
                 const PopupMenuItem(
                   value: '2',
-                  child: Text('Bono'),
+                  child:Row(
+                    children: [
+                      Icon(Icons.file_copy, color: Colors.black,),
+                      Text('Categoria'),
+                    ],
+                  ),
                 ),
                 const PopupMenuItem(
                   value: '3',

@@ -1,3 +1,4 @@
+import 'package:control_estacionamiento/app/view/categoria.dart';
 import 'package:control_estacionamiento/app/view/home_page.dart';
 import 'package:control_estacionamiento/app/view/login.dart';
 import 'package:control_estacionamiento/app/view/usuario.dart';
@@ -25,8 +26,9 @@ class MyApp extends StatelessWidget {
        useMaterial3: true,
       ),
       routes: {
-        '/pagina1': (context) => const UserPage(title: "Usuario"),
-        '/pagina2': (context) => const MyHomePage(title: "Home"),
+        '/pagina1': (context) => const UserPage(title: "Usuarios"),
+        '/pagina2': (context) => const MyHomePage(title: "Inicio"),
+        '/categoria': (context) => const categoriaView(),
       },
       home: const LoginView(title: 'Login'),
     );

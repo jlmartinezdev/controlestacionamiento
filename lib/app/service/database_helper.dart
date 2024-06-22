@@ -89,16 +89,8 @@ class DatabaseHelper {
 
   Future<List<Categoria>> getAllCategorias() async {
     final db = await database;
-    final List<Map<String, Object?>>  maps = await db.query('categoria');
-    print(maps);
-    return [
-      for (final {
-      'id': id as int,
-      'name': name as String,
-      'precio': precio as double
-      } in maps)
-        Categoria(id: id, name: name, precio: precio),
-    ];
+    final result = await db.query('categoria', orderBy: 'id ASC');
+    return result.map((json) => Categoria.map(json)).toList();
   }
 
   Future<User> checkUser(String email, String password) async{
@@ -145,17 +137,37 @@ class DatabaseHelper {
     }
 
   }
+  Future<int> getMaxUser() async {
+    final db = await database;
+    final maps= await db.query('user',orderBy: 'id_usuario DESC');
+    if(maps.isNotEmpty){
+      return int.parse(maps[0]["id_usuario"].toString());
+    }else{
+      return 0;
+    }
+
+  }
   // Define a function that inserts notes into the database
   Future<void> insertMetodo2(User note) async {
     final db = await database;
     await db.insert('user', note.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
+  Future<int> getMaxCategoria() async {
+    final db = await database;
+    final maps= await db.query('categoria',orderBy: 'id DESC');
+    if(maps.isNotEmpty){
+      return int.parse(maps[0]["id"].toString());
+    }else{
+      return 0;
+    }
+
+  }
   Future<void> insertCategoria(Categoria cat) async {
     final db = await database;
     try {
-      await db.insert('categoria', cat.toJson(),
-          conflictAlgorithm: ConflictAlgorithm.replace);
+        await db.insert('categoria', cat.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
     }catch(error){
       print(error);
     }
@@ -177,8 +189,8 @@ class DatabaseHelper {
 
     final db = await database;
     await db.update(
-      'user',
-      cat.toMap(),
+      'categoria',
+      cat.toJson(),
       where: 'id = ?',
       whereArgs: [cat.id],
     );

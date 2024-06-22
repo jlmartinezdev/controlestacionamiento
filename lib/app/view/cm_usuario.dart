@@ -1,9 +1,9 @@
-import 'package:control_estacionamiento/app/view/home_page.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/User.dart';
 import '../service/database_helper.dart';
-import 'login_presenter.dart';
+
 
 class CmUsuarioView extends StatefulWidget {
   final String title;
@@ -20,16 +20,14 @@ class CmUsuarioView extends StatefulWidget {
 
 class _CmUsuarioState extends State<CmUsuarioView> {
   late String _username, _password, _email, _dni;
-  late int _rol;
-  final String _currentSelectedValue= 'Seleccione un opcion';
-  late TextEditingController _controllerId, _controllerName, _controllerDni, _controllerEmail, _controllerPassword, _controllerRol;
+  late int _rol,_id;
 
 
   DatabaseHelper appDatabase = DatabaseHelper.instance;
   List<User> users = [];
   late User user;
   final _formKey = GlobalKey<FormState>();
-  final scaffoldKey = new GlobalKey<ScaffoldState>();
+  final scaffoldKey =  GlobalKey<ScaffoldState>();
   List<DropdownMenuItem<String>> get dropdownItems{
     List<DropdownMenuItem<String>> menuItems = [
       const DropdownMenuItem(value: "1", child: Text("Administrador Gral")),
@@ -42,14 +40,14 @@ class _CmUsuarioState extends State<CmUsuarioView> {
   @override
   void initState() {
     super.initState();
-
+    getMaxId();
   }
-  void setRol(String val){
-    if(_currentSelectedValue.isNotEmpty){
-
-    }else{
-      _rol= 1;
-    }
+  void getMaxId(){
+    appDatabase.getMaxUser().then((onValue) async=>{
+      setState(() {
+        _id= onValue + 1;
+      })
+    });
   }
   void _showSnackBar(String text, int type) {
     ScaffoldMessenger.of(context).showSnackBar( SnackBar(
@@ -89,7 +87,7 @@ class _CmUsuarioState extends State<CmUsuarioView> {
     if (form!.validate()) {
       setState(() {
         form.save();
-        saveData(User(id_usuario: widget.idLength ,name: _username, dni: _dni, password: _password, email: _email, rol: _rol));
+        saveData(User(id_usuario: widget.isNew ? _id :  widget.idLength ,name: _username, dni: _dni, password: _password, email: _email, rol: _rol));
      //   _presenter.doLogin(_username, _password);
       });
     }
@@ -203,7 +201,7 @@ class _CmUsuarioState extends State<CmUsuarioView> {
                     },
 
                     items : dropdownItems.map((item) {
-                      return new DropdownMenuItem<String>(
+                      return  DropdownMenuItem<String>(
                         value: item.value,
                         child: item.child, //FAIL
                       );

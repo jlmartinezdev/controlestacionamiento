@@ -40,7 +40,7 @@ class _LoginState extends State<LoginView> implements LoginPageContract {
     final form = _formKey.currentState;
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
         builder: (context) => const MyHomePage(
-          title: 'Categoria',
+          title: 'Inicio',
         )), (Route<dynamic> route) => false);
 
 
