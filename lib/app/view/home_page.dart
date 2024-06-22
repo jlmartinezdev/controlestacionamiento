@@ -68,8 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
           backgroundColor: Theme
               .of(context)
-              .colorScheme
-              .inversePrimary,
+              .colorScheme.primary,
           title: Text(widget.title),
           actions: [
             PopupMenuButton<String>(

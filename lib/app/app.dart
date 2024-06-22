@@ -17,10 +17,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primary).copyWith(
           surface: const Color(0xffffffff)
         ),
-        textTheme: Theme.of(context).textTheme.apply(
+        /*textTheme: Theme.of(context).textTheme.apply(
           fontFamily: 'Inter',
           displayColor: const Color(0xff000000)
-        ),
+        ),**/
 
        useMaterial3: true,
       ),

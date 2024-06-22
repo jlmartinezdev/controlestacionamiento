@@ -38,13 +38,18 @@ class _LoginState extends State<LoginView> implements LoginPageContract {
   }
   void _submit() {
     final form = _formKey.currentState;
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+        builder: (context) => const MyHomePage(
+          title: 'Categoria',
+        )), (Route<dynamic> route) => false);
 
-    if (form!.validate()) {
+
+   /* if (form!.validate()) {
       setState(() {
         form.save();
         _presenter.doLogin(_username, _password);
       });
-    }
+    }*/
   }
   getAllUser() async {
     var userst = await appDatabase.users();

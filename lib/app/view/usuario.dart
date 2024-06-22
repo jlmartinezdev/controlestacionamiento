@@ -1,5 +1,6 @@
 import 'package:control_estacionamiento/app/models/User.dart';
 import 'package:control_estacionamiento/app/service/database_helper.dart';
+import 'package:control_estacionamiento/app/view/cm_usuario.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,7 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   DatabaseHelper appDatabase = DatabaseHelper.instance;
   List<User> users= [];
+  final int test = 1;
 
   getAllUser() {
     appDatabase.getAllUsers().then((onValue) async  {
@@ -26,6 +28,11 @@ class _UserPageState extends State<UserPage> {
         print(onError);
       }
     });
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    getAllUser();
   }
   @override
   void initState() {
@@ -45,46 +52,100 @@ class _UserPageState extends State<UserPage> {
     title: Text(widget.title),
     ),
       floatingActionButton: FloatingActionButton.extended(
-          label: const Text(" "),
+          label: const Text("Nuevo Usuario"),
           icon: const Icon(Icons.add),
           onPressed: () {
-            setState(() {});
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>  CmUsuarioView(
+                    title: 'Nuevo Usuario',
+                    idLength:  users.length + 1,
+                    isNew: true,
+                    user: User(id_usuario: 0,name: '',dni:'',password: '',email: '',rol: 1),
+                  )),
+            ).then((_)=>{
+              getAllUser()
+            });
           }),
-      body: ListView.builder(
+      body: ListView.separated(
         itemCount: users.length,
         itemBuilder: (context, index) {
           final item = users[index];
           return ListTile(
+            leading: const CircleAvatar(
+              backgroundColor: Colors.white70,
+              child: Icon(Icons.person,color: Colors.grey,),
+            ),
             title: Text(item.name.toString(),
                 style: const TextStyle(
-                 fontSize: 24.0)),
+                 fontSize: 20.0)),
+            subtitle: Text(item.email.toString()),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () {
-                    // Lógica para editar el item
-                    print('Editar $item');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>  CmUsuarioView(
+                            title: 'Editar Usuario',
+                            idLength: int.parse(item.id_usuario.toString()),
+                            isNew: false,
+                            user: item,
+                          )),
+                    ).then((_)=>{
+                      getAllUser()
+                    });
+
                   },
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    // Lógica para borrar el item
-                    setState(() {
-                     // items.removeAt(index);
+                  onPressed: () async {
+                    final result = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Desea eliminar usuario?'),
+                        content: const Text('Se eliminara permanentemente de la base de datos'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text('Eliminar'),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    if (result == null || !result) {
+                      return;
+                    }
+                    appDatabase.deleteUser(int.parse(item.id_usuario.toString())).then((success)=>{
+                      getAllUser()
                     });
+
                   },
                 ),
               ],
             ),
+
           );
+        },
+        separatorBuilder: (context, index) { // <-- SEE HERE
+          return const Divider();
         },
       ),
 
     );
+
   }
+
   
 }
 

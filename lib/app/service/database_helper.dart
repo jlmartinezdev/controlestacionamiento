@@ -17,7 +17,7 @@ class DatabaseHelper {
 
   // Set the version. This executes the onCreate function and provides a
   // path to perform database upgrades and downgrades.
-  static const int versionNumber = 2;
+  static const int versionNumber = 3;
 
   // Table name
   static const String tableNotes = 'User';
@@ -167,7 +167,7 @@ class DatabaseHelper {
     final db = await database;
     await db.update(
       'user',
-      user.toMap(),
+      user.toJson(),
       where: 'id_usuario = ?',
       whereArgs: [user.id_usuario],
     );
