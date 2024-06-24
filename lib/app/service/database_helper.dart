@@ -1,6 +1,7 @@
 // Import the plugins Path provider and SQLite.
 
 import 'package:control_estacionamiento/app/models/Categoria.dart';
+import 'package:control_estacionamiento/app/models/Entrada.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '/app/models/User.dart';
@@ -17,7 +18,7 @@ class DatabaseHelper {
 
   // Set the version. This executes the onCreate function and provides a
   // path to perform database upgrades and downgrades.
-  static const int versionNumber = 3;
+  static const int versionNumber = 5;
 
   // Table name
   static const String tableNotes = 'User';
@@ -60,7 +61,7 @@ class DatabaseHelper {
       'CREATE TABLE user(id_usuario INTEGER PRIMARY KEY, name TEXT, dni TEXT, password TEXT, email TEXT, rol INTEGER)',
     );
     await db.execute('CREATE TABLE categoria( id INTEGER PRIMARY KEY, name TEXT, precio REAL)');
-    await db.execute('CREATE TABLE entrada(id INTEGER PRIMARY KEY, fechahora TEXT, id_usuario INTEGER, monto REAL)');
+    await db.execute("CREATE TABLE entrada(id INTEGER PRIMARY KEY, id_usuario INTEGER, monto REAL, fechahora INTEGER DEFAULT (cast(strftime('%s','now') as int))");
 
 
   }
@@ -70,6 +71,13 @@ class DatabaseHelper {
     final result = await db.query('user', orderBy: '$colId ASC');
     return result.map((json) => User.map(json)).toList();
   }
+  Future<List<Entrada>> getAllEntrada() async {
+    final db = await database;
+    final result = await db.query('entrada', orderBy: 'id DESC');
+    print(result);
+    return result.map((json) => Entrada.map(json)).toList();
+  }
+
 
   Future<List<User>> users() async {
     final db = await database;
@@ -126,15 +134,12 @@ class DatabaseHelper {
     // Get a reference to the database.
 
     final db = await database;
-    try{
+
       await db.insert(
         'user',
         user.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-    }catch(ex){
-      print(ex);
-    }
 
   }
   Future<int> getMaxUser() async {
@@ -163,6 +168,7 @@ class DatabaseHelper {
     }
 
   }
+
   Future<void> insertCategoria(Categoria cat) async {
     final db = await database;
     try {
@@ -172,6 +178,19 @@ class DatabaseHelper {
       print(error);
     }
   }
+  static int currentTimeInSeconds() {
+    var ms = (DateTime.now()).millisecondsSinceEpoch;
+    return (ms / 1000).round();
+  }
+  Future<int> insertEntrada(Entrada ent) async {
+      Database db = await database;
+      var row = {
+        'id_usuario'  : ent.id_usuario,
+        'monto' : ent.monto,
+        'fechahora': currentTimeInSeconds()
+      };
+      return await db.insert('entrada', row);  //the id
+    }
 
 
   Future<void> updateUser(User user) async {
@@ -209,6 +228,14 @@ class DatabaseHelper {
     final db = await database;
     await db.delete(
       'categoria',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+  Future<void> deleteEntrada(int id) async {
+    final db = await database;
+    await db.delete(
+      'entrada',
       where: 'id = ?',
       whereArgs: [id],
     );

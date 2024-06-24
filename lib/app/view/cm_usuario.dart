@@ -114,7 +114,9 @@ class _CmUsuarioState extends State<CmUsuarioView> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(widget.title, style: const TextStyle(color: Colors.white),),
-
+        iconTheme: const  IconThemeData(
+            color: Colors.white
+        ),
       ),
       backgroundColor: const Color(0xffffffff),
       body: SingleChildScrollView(

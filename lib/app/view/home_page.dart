@@ -1,11 +1,12 @@
 import 'package:control_estacionamiento/app/models/Categoria.dart';
 import 'package:control_estacionamiento/app/service/database_helper.dart';
+import 'package:control_estacionamiento/app/view/detail_entrada.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
 
   final String title;
 
@@ -14,105 +15,115 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   DatabaseHelper appDatabase = DatabaseHelper.instance;
-  List<Categoria> categorias= [];
+  List<Categoria> categorias = [];
   String _selectedValue = '1';
+
   //late Categoria categoria;
 
   void navegarAPagina(BuildContext context, String ruta) {
-    Navigator.pushNamed(context, ruta).then((_)=>{
-      getAllCategoria()
-    });
+    Navigator.pushNamed(context, ruta).then((_) => {getAllCategoria()});
   }
 
-  void getAllCategoria(){
-    List<Categoria> tempCats = [
-      Categoria(id:1, name: 'Bono', precio: 200),
-      Categoria(id:2, name: 'Bono', precio: 400),
-      Categoria(id:3, name: 'Bono', precio: 600),
-      Categoria(id:4, name: 'Bono', precio: 1600),
-      Categoria(id:5, name: 'Bono', precio: 4000),
-      Categoria(id:6, name: 'Bono', precio: 8000),
-    ];
-    appDatabase.getAllCategorias().then((onValue) async  {
+  void getAllCategoria() {
+
+    appDatabase.getAllCategorias().then((onValue) async {
       setState(() {
         categorias = onValue;
       });
-    }).catchError((onError){
+    }).catchError((onError) {
       if (kDebugMode) {
         print(onError);
       }
     });
   }
 
-
-
-  void _showToast(BuildContext context,String  msg) {
+  void _showToast(BuildContext context, String msg) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
         content: Text(msg),
-        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }
+
   @override
   void initState() {
     super.initState();
     getAllCategoria();
   }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
-
-          backgroundColor: Theme
-              .of(context)
-              .colorScheme.primary,
-          title: Text(widget.title),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: Text(
+            widget.title,
+            style: const TextStyle(color: Colors.white),
+          ),
           actions: [
             PopupMenuButton<String>(
               onSelected: (String value) {
                 setState(() {
                   _selectedValue = value;
                 });
-                if(_selectedValue== '1'){
+                if (_selectedValue == '1') {
                   navegarAPagina(context, '/pagina1');
                 }
-                if(_selectedValue== '2'){
+                if (_selectedValue == '2') {
                   navegarAPagina(context, '/categoria');
                 }
-
               },
               itemBuilder: (BuildContext context) => [
-                const PopupMenuItem(
-
+                PopupMenuItem(
                   value: '1',
-                  child:Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.person, color: Colors.black,),
-                      Text('Usuario'),
+                      Icon(Icons.person,
+                          color: Theme.of(context).colorScheme.primary),
+                      const Text('Usuario'),
                     ],
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: '2',
-                  child:Row(
+                  child: Row(
                     children: [
-                      Icon(Icons.file_copy, color: Colors.black,),
-                      Text('Categoria'),
+                      Icon(
+                        Icons.directions_car,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const Text('Categoria'),
                     ],
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: '3',
-                  child: Text('Cerrar Sesion'),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.logout,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const Text('Cerrar Sesion'),
+                    ],
+                  ),
                 ),
               ],
             )
           ],
+        ),
+        floatingActionButton:  FloatingActionButton(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Colors.white,
+          onPressed: (){
+            navegarAPagina(context, '/entrada');
+          },
+          child: const Icon(Icons.list, color: Colors.white,),
         ),
         body:
         GridView.builder(
@@ -122,29 +133,31 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisSpacing: 10,
           ),
           itemCount: categorias.length,
-
           itemBuilder: (context, index) {
+            final item = categorias[index];
             return GestureDetector(
                 onTap: () {
-                  _showToast(context, index.toString());
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DetailEntrada(categoria: item)));
                 },
-            child:  Container(
-              color: const Color.fromRGBO(234, 242, 255, 1),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('B0NO',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0
-                    )),
-                  Text('\$${categorias[index].precio}')],
-              ),
-            )
-            );
+                child: Container(
+                  color: const Color.fromRGBO(234, 242, 255, 1),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.beenhere, color: Colors.grey,),
+                      const Text('B0NO',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16.0)),
+                      Text('\$${categorias[index].precio}')
+                    ],
+                  ),
+                ));
           },
-        )
-    );
+        ));
   }
 }

@@ -3,17 +3,17 @@ import 'package:control_estacionamiento/app/service/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class cmCategoriaView extends StatefulWidget {
+class CmCategoriaView extends StatefulWidget {
   final bool isNew;
   final String title;
   final Categoria categoria;
-  const cmCategoriaView({super.key, required this.isNew, required this.title, required this.categoria});
+  const CmCategoriaView({super.key, required this.isNew, required this.title, required this.categoria});
 
   @override
-  State<cmCategoriaView> createState() => _cmCategoriaViewState();
+  State<CmCategoriaView> createState() => _CmCategoriaViewState();
 }
 
-class _cmCategoriaViewState extends State<cmCategoriaView> {
+class _CmCategoriaViewState extends State<CmCategoriaView> {
   late String _name;
   late int _id;
   late double _precio;
@@ -98,7 +98,18 @@ class _cmCategoriaViewState extends State<cmCategoriaView> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(widget.title, style: const TextStyle(color: Colors.white),),
-
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          iconSize: 60,
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color:  Colors.white,
+            size: 30,
+          ),
+          onPressed: () async {
+            Navigator.pop(context);
+          },
+        ),
       ),
       backgroundColor: const Color(0xffffffff),
       body: SingleChildScrollView(

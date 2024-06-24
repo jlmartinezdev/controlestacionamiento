@@ -1,4 +1,5 @@
 import 'package:control_estacionamiento/app/view/categoria.dart';
+import 'package:control_estacionamiento/app/view/entrada.dart';
 import 'package:control_estacionamiento/app/view/home_page.dart';
 import 'package:control_estacionamiento/app/view/login.dart';
 import 'package:control_estacionamiento/app/view/usuario.dart';
@@ -18,17 +19,17 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primary).copyWith(
           surface: const Color(0xffffffff)
         ),
-        /*textTheme: Theme.of(context).textTheme.apply(
-          fontFamily: 'Inter',
+        textTheme: Theme.of(context).textTheme.apply(
           displayColor: const Color(0xff000000)
-        ),**/
+        ),
 
        useMaterial3: true,
       ),
       routes: {
         '/pagina1': (context) => const UserPage(title: "Usuarios"),
         '/pagina2': (context) => const MyHomePage(title: "Inicio"),
-        '/categoria': (context) => const categoriaView(),
+        '/categoria': (context) => const CategoriaView(),
+        '/entrada': (context) => const EntradaView(),
       },
       home: const LoginView(title: 'Login'),
     );

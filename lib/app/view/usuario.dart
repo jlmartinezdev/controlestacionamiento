@@ -47,9 +47,11 @@ class _UserPageState extends State<UserPage> {
 
         backgroundColor: Theme
         .of(context)
-        .colorScheme
-        .inversePrimary,
-    title: Text(widget.title),
+        .colorScheme.primary,
+    title: Text(widget.title, style: const TextStyle( color: Colors.white),),
+          iconTheme: const IconThemeData(
+            color: Colors.white
+          ),
     ),
       floatingActionButton: FloatingActionButton.extended(
           label: const Text("Nuevo Usuario"),
@@ -73,9 +75,9 @@ class _UserPageState extends State<UserPage> {
         itemBuilder: (context, index) {
           final item = users[index];
           return ListTile(
-            leading: const CircleAvatar(
-              backgroundColor: Colors.white70,
-              child: Icon(Icons.person,color: Colors.grey,),
+            leading:  CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              child: const Icon(Icons.person,color: Colors.white ),
             ),
             title: Text(item.name.toString(),
                 style: const TextStyle(
@@ -85,7 +87,7 @@ class _UserPageState extends State<UserPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.edit),
+                  icon: const Icon(Icons.edit, color: Colors.grey,),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -103,7 +105,7 @@ class _UserPageState extends State<UserPage> {
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete),
+                  icon: const Icon(Icons.delete, color: Colors.grey,),
                   onPressed: () async {
                     final result = await showDialog<bool>(
                       context: context,

@@ -4,21 +4,19 @@ import 'package:control_estacionamiento/app/view/cm_categoria.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class categoriaView extends StatefulWidget {
-  const categoriaView({super.key});
+class CategoriaView extends StatefulWidget {
+  const CategoriaView({super.key});
 
   @override
-  State<categoriaView> createState() => _categoriaViewState();
+  State<CategoriaView> createState() => _CategoriaViewState();
 }
 
-class _categoriaViewState extends State<categoriaView> {
+class _CategoriaViewState extends State<CategoriaView> {
   DatabaseHelper appDatabase = DatabaseHelper.instance;
   List<Categoria> categorias= [];
 
    void getAllCategoria() async{
-     print("GET ALL....");
      await appDatabase.getAllCategorias().then((onValue)   {
-       print(onValue);
        setState(() {
          categorias = onValue;
        });
@@ -45,12 +43,12 @@ class _categoriaViewState extends State<categoriaView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         backgroundColor: Theme
             .of(context)
             .colorScheme
-            .inversePrimary,
-        title: const Text("Categoria Bono"),
+            .primary,
+        title: const Text("Categoria Bono", style: TextStyle(color: Colors.white),),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       floatingActionButton: FloatingActionButton.extended(
           label: const Text("Nueva Categoria"),
@@ -59,7 +57,7 @@ class _categoriaViewState extends State<categoriaView> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>  cmCategoriaView(
+                  builder: (context) =>  CmCategoriaView(
                     title: 'Nueva Categoria',
                     isNew: true,
                     categoria: Categoria(id: categorias.length,name: '',precio: 0),
@@ -73,9 +71,9 @@ class _categoriaViewState extends State<categoriaView> {
         itemBuilder: (context, index) {
           final item = categorias[index];
           return ListTile(
-            leading: const CircleAvatar(
-              backgroundColor: Colors.deepPurple,
-              child: Icon(Icons.file_download_done ,color: Colors.grey,),
+            leading:  CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              child: const Icon(Icons.check ,color: Colors.white,),
             ),
             title: Text(item.name.toString(),
                 style: const TextStyle(
@@ -85,12 +83,12 @@ class _categoriaViewState extends State<categoriaView> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.edit),
+                  icon: const Icon(Icons.edit, color: Colors.grey,),
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>  cmCategoriaView(
+                          builder: (context) =>  CmCategoriaView(
                             title: 'Editar Categoria',
                             isNew: false,
                             categoria: item,
@@ -102,7 +100,7 @@ class _categoriaViewState extends State<categoriaView> {
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete),
+                  icon: const Icon(Icons.delete, color: Colors.grey,),
                   onPressed: () async {
                     final result = await showDialog<bool>(
                       context: context,
