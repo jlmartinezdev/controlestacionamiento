@@ -78,6 +78,12 @@ class DatabaseHelper {
     return result.map((json) => Entrada.map(json)).toList();
   }
 
+  Future<void> getAllEntradaByDate(String desde, String hasta) async {
+    final db = await database;
+    final result = await db.rawQuery("Select *  from entrada where date(datetime(fechahora, 'unixepoch','localtime')) between '${desde}' and '${hasta}'");
+    print(result);
+
+  }
 
   Future<List<User>> users() async {
     final db = await database;
